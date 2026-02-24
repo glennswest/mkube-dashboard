@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Pods - mkube Dashboard{% endblock %}
+{% block nav_pods %} active{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Pods</h2>
+    <form class="filter-form" method="get" action="/pods">
+        <input type="text" name="ns" placeholder="Filter by namespace..." value="{{ filter_ns }}" class="input">
+        <button type="submit" class="btn btn-sm">Filter</button>
+        {% if !filter_ns.is_empty() %}
+        <a href="/pods" class="btn btn-sm btn-secondary">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Namespace</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>IP</th>
+            <th>Containers</th>
+            <th>Restarts</th>
+            <th>Age</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for pod in pods %}
+    <tr>
+        <td>{{ pod.namespace }}</td>
+        <td><a href="/pods/{{ pod.namespace }}/{{ pod.name }}">{{ pod.name }}</a></td>
+        <td><span class="badge badge-{{ pod.phase|lower }}">{{ pod.phase }}</span></td>
+        <td class="mono">{{ pod.pod_ip }}</td>
+        <td>{{ pod.container_count }}</td>
+        <td>{{ pod.restart_count }}</td>
+        <td>{{ pod.created }}</td>
+        <td>
+            <a href="/pods/{{ pod.namespace }}/{{ pod.name }}/logs" class="btn btn-sm">Logs</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

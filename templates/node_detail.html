@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ node_name }} - mkube Dashboard{% endblock %}
+{% block nav_nodes %} active{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Node: {{ node_name }}</h2>
+    <a href="/nodes" class="btn btn-sm btn-secondary">Back</a>
+</div>
+
+<div class="card">
+    <h3>Info</h3>
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Architecture</span>
+            <span>{{ architecture }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">OS</span>
+            <span>{{ os }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Kernel</span>
+            <span>{{ kernel }}</span>
+        </div>
+    </div>
+</div>
+
+{% if !conditions.is_empty() %}
+<div class="card">
+    <h3>Conditions</h3>
+    <table class="table">
+        <thead><tr><th>Type</th><th>Status</th><th>Message</th></tr></thead>
+        <tbody>
+        {% for cond in conditions %}
+        <tr>
+            <td>{{ cond.condition_type }}</td>
+            <td>
+                {% if cond.status == "True" %}
+                <span class="badge badge-pass">True</span>
+                {% else %}
+                <span class="badge badge-fail">{{ cond.status }}</span>
+                {% endif %}
+            </td>
+            <td>{{ cond.message }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if !capacity.is_empty() %}
+<div class="card">
+    <h3>Capacity</h3>
+    <table class="table">
+        <thead><tr><th>Resource</th><th>Capacity</th><th>Allocatable</th></tr></thead>
+        <tbody>
+        {% for cap in capacity %}
+        <tr>
+            <td>{{ cap.resource }}</td>
+            <td>{{ cap.capacity }}</td>
+            <td>{{ cap.allocatable }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="card">
+    <h3>Pods</h3>
+    <table class="table">
+        <thead><tr><th>Namespace</th><th>Name</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for pod in pods %}
+        <tr>
+            <td>{{ pod.namespace }}</td>
+            <td><a href="/pods/{{ pod.namespace }}/{{ pod.name }}">{{ pod.name }}</a></td>
+            <td><span class="badge badge-{{ pod.phase|lower }}">{{ pod.phase }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ network.name }} - mkube Dashboard{% endblock %}
+{% block nav_networks %} active{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Network: {{ network.name }}</h2>
+    <a href="/networks" class="btn btn-sm btn-secondary">Back</a>
+</div>
+
+<div class="card">
+    <h3>Configuration</h3>
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Bridge</span>
+            <span>{{ network.bridge }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">CIDR</span>
+            <span class="mono">{{ network.cidr }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Gateway</span>
+            <span class="mono">{{ network.gateway }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">DNS Server</span>
+            <span class="mono">{{ network.dns }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">DNS Zone</span>
+            <span>{{ network.dns_zone }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">DNS Endpoint</span>
+            <span class="mono">{{ network.dns_endpoint }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">IPAM Start</span>
+            <span class="mono">{{ network.ipam_start }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">IPAM End</span>
+            <span class="mono">{{ network.ipam_end }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">External DNS</span>
+            <span>{% if network.external_dns %}Yes{% else %}No{% endif %}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

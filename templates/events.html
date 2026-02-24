@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Events - mkube Dashboard{% endblock %}
+{% block nav_events %} active{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Events</h2>
+    <form class="filter-form" method="get" action="/events">
+        <input type="text" name="ns" placeholder="Filter by namespace..." value="{{ filter_ns }}" class="input">
+        <button type="submit" class="btn btn-sm">Filter</button>
+        {% if !filter_ns.is_empty() %}
+        <a href="/events" class="btn btn-sm btn-secondary">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Reason</th>
+            <th>Object</th>
+            <th>Message</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for event in events %}
+    <tr>
+        <td>{{ event.timestamp }}</td>
+        <td><span class="badge badge-{{ event.event_type|lower }}">{{ event.event_type }}</span></td>
+        <td>{{ event.reason }}</td>
+        <td>
+            {% if !event.obj_name.is_empty() %}
+            <a href="/pods/{{ event.obj_namespace }}/{{ event.obj_name }}">{{ event.obj_namespace }}/{{ event.obj_name }}</a>
+            {% else %}
+            -
+            {% endif %}
+        </td>
+        <td>{{ event.message }}</td>
+        <td>{{ event.count }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% if events.is_empty() %}
+<div class="card">
+    <p class="text-muted">No events found.</p>
+</div>
+{% endif %}
+{% endblock %}

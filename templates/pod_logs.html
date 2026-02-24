@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Logs: {{ pod_name }} - mkube Dashboard{% endblock %}
+{% block nav_pods %} active{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Logs: {{ namespace }}/{{ pod_name }}</h2>
+    <a href="/pods/{{ namespace }}/{{ pod_name }}" class="btn btn-sm btn-secondary">Back to Pod</a>
+</div>
+
+{% if containers.len() > 1 %}
+<div class="container-tabs">
+    {% for c in containers %}
+    <a href="/pods/{{ namespace }}/{{ pod_name }}/logs?container={{ c.name }}"
+       class="tab{% if c.active %} tab-active{% endif %}">{{ c.name }}</a>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="card log-card">
+    <div class="log-header">
+        <span>Container: <strong>{{ container }}</strong></span>
+        <span class="log-auto-refresh">Auto-refresh: 2s</span>
+    </div>
+    <div id="log-output"
+         hx-get="/proxy/logs/{{ namespace }}/{{ pod_name }}/{{ container }}?tail=200"
+         hx-trigger="load, every 2s"
+         hx-swap="innerHTML">
+        <p class="loading">Loading logs...</p>
+    </div>
+</div>
+{% endblock %}

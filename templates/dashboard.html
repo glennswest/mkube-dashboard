@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}mkube Dashboard{% endblock %}
+{% block nav_dashboard %} active{% endblock %}
+{% block content %}
+<h2>Overview</h2>
+<div id="dashboard-content"
+     hx-get="/dashboard/content"
+     hx-trigger="load, every 10s"
+     hx-swap="innerHTML">
+    <p class="loading">Loading dashboard...</p>
+</div>
+{% endblock %}

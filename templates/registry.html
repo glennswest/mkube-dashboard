@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Registry - mkube Dashboard{% endblock %}
+{% block nav_registry %} active{% endblock %}
+{% block content %}
+<h2>Container Registry</h2>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_repos }}</div>
+        <div class="stat-label">Repositories</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ total_tags }}</div>
+        <div class="stat-label">Total Tags</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ total_storage }}</div>
+        <div class="stat-label">Storage Used</div>
+    </div>
+</div>
+
+{% for repo in repos %}
+<div class="card">
+    <div class="card-header">
+        <h3>{{ repo.name }}</h3>
+        <div class="card-header-meta">
+            <span class="badge badge-type">{{ repo.tag_count }} tag{% if repo.tag_count != 1 %}s{% endif %}</span>
+            {% if repo.in_use %}
+            <span class="badge badge-pass">In Use</span>
+            {% else %}
+            <span class="badge badge-warn">Unused</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if repo.in_use %}
+    <div class="used-by">
+        Used by:
+        {% for pod in repo.used_by %}
+        <span class="badge badge-sm">{{ pod }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Digest</th>
+                <th>Size</th>
+                <th>Layers</th>
+                <th>Arch</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tag in repo.tags %}
+        <tr>
+            <td><strong>{{ tag.name }}</strong></td>
+            <td class="mono digest">{{ tag.digest }}</td>
+            <td>{{ tag.size }}</td>
+            <td>{{ tag.layers }}</td>
+            <td>{{ tag.architecture.as_deref().unwrap_or("-") }}/{{ tag.os.as_deref().unwrap_or("-") }}</td>
+            <td>{{ tag.created.as_deref().unwrap_or("-") }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endfor %}
+
+{% if repos.is_empty() %}
+<div class="card">
+    <p class="text-muted">No repositories found in the registry.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}{{ zone_name }} Records - mkube Dashboard{% endblock %}
+{% block nav_dns %} active{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ network }} / {{ zone_name }}</h2>
+    <a href="/dns" class="btn btn-sm btn-secondary">Back to DNS</a>
+</div>
+
+{% match error %}
+{% when Some with (err) %}
+<div class="alert alert-error">{{ err }}</div>
+{% when None %}
+{% endmatch %}
+
+<div class="card">
+    <h3>Add Record</h3>
+    <form method="post" action="/dns/{{ network }}/{{ zone_id }}/records" class="form-inline">
+        <input type="text" name="name" placeholder="Name (e.g. www)" required class="input">
+        <select name="record_type" class="input">
+            <option value="A">A</option>
+            <option value="AAAA">AAAA</option>
+            <option value="CNAME">CNAME</option>
+            <option value="PTR">PTR</option>
+            <option value="NS">NS</option>
+            <option value="TXT">TXT</option>
+        </select>
+        <input type="text" name="value" placeholder="Value (e.g. 192.168.1.10)" required class="input input-wide">
+        <input type="number" name="ttl" value="300" min="60" max="86400" class="input input-narrow">
+        <button type="submit" class="btn">Add</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Records ({{ records.len() }})</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>TTL</th>
+                <th>Enabled</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.name }}</td>
+            <td><span class="badge badge-type">{{ record.record_type }}</span></td>
+            <td class="mono">{{ record.value }}</td>
+            <td>{{ record.ttl }}</td>
+            <td>
+                {% if record.enabled %}
+                <span class="badge badge-pass">Yes</span>
+                {% else %}
+                <span class="badge badge-warn">No</span>
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="/dns/{{ network }}/{{ zone_id }}/records/{{ record.id }}/delete" style="display:inline">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

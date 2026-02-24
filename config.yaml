@@ -1,0 +1,16 @@
+listen_addr: "0.0.0.0:8080"
+mkube_url: "http://192.168.200.2:8082"
+registry_url: "http://192.168.200.3:5000"
+dns_endpoints:
+  - name: gt
+    url: "http://192.168.200.199:8080"
+    zone: "gt.lo"
+  - name: g10
+    url: "http://192.168.10.252:8080"
+    zone: "g10.lo"
+  - name: g11
+    url: "http://192.168.11.252:8080"
+    zone: "g11.lo"
+  - name: gw
+    url: "http://192.168.1.199:8080"
+    zone: "gw.lo"

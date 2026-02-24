@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}mkube Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/htmx.min.js"></script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h1>mkube</h1>
+            <span class="subtitle">Dashboard</span>
+        </div>
+        <ul class="nav-list">
+            <li><a href="/" class="nav-link{% block nav_dashboard %} {% endblock %}">
+                <span class="nav-icon">&#9632;</span> Overview
+            </a></li>
+            <li><a href="/pods" class="nav-link{% block nav_pods %}{% endblock %}">
+                <span class="nav-icon">&#9654;</span> Pods
+            </a></li>
+            <li><a href="/nodes" class="nav-link{% block nav_nodes %}{% endblock %}">
+                <span class="nav-icon">&#9670;</span> Nodes
+            </a></li>
+            <li><a href="/dns" class="nav-link{% block nav_dns %}{% endblock %}">
+                <span class="nav-icon">&#9788;</span> DNS
+            </a></li>
+            <li><a href="/networks" class="nav-link{% block nav_networks %}{% endblock %}">
+                <span class="nav-icon">&#9733;</span> Networks
+            </a></li>
+            <li><a href="/registry" class="nav-link{% block nav_registry %}{% endblock %}">
+                <span class="nav-icon">&#9881;</span> Registry
+            </a></li>
+            <li><a href="/events" class="nav-link{% block nav_events %}{% endblock %}">
+                <span class="nav-icon">&#9889;</span> Events
+            </a></li>
+        </ul>
+    </nav>
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

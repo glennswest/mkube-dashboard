@@ -1,0 +1,92 @@
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_count }}</div>
+        <div class="stat-label">Total Pods</div>
+    </div>
+    <div class="stat-card stat-running">
+        <div class="stat-value">{{ running_count }}</div>
+        <div class="stat-label">Running</div>
+    </div>
+    <div class="stat-card stat-pending">
+        <div class="stat-value">{{ pending_count }}</div>
+        <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card stat-failed">
+        <div class="stat-value">{{ failed_count }}</div>
+        <div class="stat-label">Failed</div>
+    </div>
+</div>
+
+<div class="grid-2col">
+    <div class="card">
+        <h3>Consistency</h3>
+        {% match consistency.summary %}
+        {% when Some with (summary) %}
+        <div class="consistency-summary">
+            <span class="badge badge-pass">{{ summary.pass }} pass</span>
+            <span class="badge badge-warn">{{ summary.warn }} warn</span>
+            <span class="badge badge-fail">{{ summary.fail }} fail</span>
+        </div>
+        {% when None %}
+        {% endmatch %}
+        <table class="table">
+            <thead><tr><th>Check</th><th>Status</th><th>Message</th></tr></thead>
+            <tbody>
+            {% for check in consistency.checks %}
+            <tr>
+                <td>{{ check.name }}</td>
+                <td><span class="badge badge-{{ check.status }}">{{ check.status }}</span></td>
+                <td>{{ check.message }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>DNS Status</h3>
+        <table class="table">
+            <thead><tr><th>Network</th><th>Zone</th><th>Status</th></tr></thead>
+            <tbody>
+            {% for dns in dns_status %}
+            <tr>
+                <td><a href="/dns">{{ dns.name }}</a></td>
+                <td>{{ dns.zone }}</td>
+                <td>
+                    {% if dns.reachable %}
+                    <span class="badge badge-pass">UP</span>
+                    {% else %}
+                    <span class="badge badge-fail">DOWN</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Recent Events</h3>
+    <table class="table">
+        <thead><tr><th>Type</th><th>Reason</th><th>Object</th><th>Message</th><th>Time</th></tr></thead>
+        <tbody>
+        {% for event in recent_events %}
+        <tr>
+            <td><span class="badge badge-{{ event.event_type|lower }}">{{ event.event_type }}</span></td>
+            <td>{{ event.reason }}</td>
+            <td>
+                {% match event.involved_object %}
+                {% when Some with (obj) %}
+                {{ obj.namespace }}/{{ obj.name }}
+                {% when None %}
+                -
+                {% endmatch %}
+            </td>
+            <td>{{ event.message }}</td>
+            <td>{{ event.last_timestamp.as_deref().unwrap_or("-") }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

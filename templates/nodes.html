@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Nodes - mkube Dashboard{% endblock %}
+{% block nav_nodes %} active{% endblock %}
+{% block content %}
+<h2>Nodes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Architecture</th>
+            <th>OS</th>
+            <th>Kernel</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for node in nodes %}
+    <tr>
+        <td><a href="/nodes/{{ node.name }}">{{ node.name }}</a></td>
+        <td>
+            {% if node.ready %}
+            <span class="badge badge-pass">Ready</span>
+            {% else %}
+            <span class="badge badge-fail">Not Ready</span>
+            {% endif %}
+        </td>
+        <td>{{ node.architecture }}</td>
+        <td>{{ node.os }}</td>
+        <td>{{ node.kernel }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
